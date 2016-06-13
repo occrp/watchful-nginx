@@ -1,6 +1,6 @@
 FROM debian:jessie
 
-#    Watchful NGinX container -- nginx docker container that watches for
+#    Watchful NginX container -- nginx docker container that watches for
 #    logrotated logfiles and makes sure nginx reloads them when needed.
 #    
 #    Copyright (C) 2015 Organized Crime and Corruption Reporting Project
@@ -39,7 +39,7 @@ RUN ln -sf /dev/stderr /var/log/nginx/error.log
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
-VOLUME ["/var/cache/nginx"]
+VOLUME ["/var/cache/nginx", "/etc/nginx"]
 
 EXPOSE 80 443
 #CMD ["nginx", "-g", "daemon off;"]

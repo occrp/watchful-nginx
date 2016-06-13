@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#    Watchful NGinX container -- nginx docker container that watches for
+#    Watchful NginX container -- nginx docker container that watches for
 #    logrotated logfiles and makes sure nginx reloads them when needed.
 #    
 #    Copyright (C) 2015 Organized Crime and Corruption Reporting Project
