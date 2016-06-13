@@ -19,17 +19,40 @@ FROM debian:jessie
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # based on: https://github.com/nginxinc/docker-nginx/blob/1eea9f7d082dff426e7923a90138de804038266d/Dockerfile
-#MAINTAINER NGINX Docker Maintainers "docker-maint@nginx.com"
 MAINTAINER Michał "rysiek" Woźniak <rysiek@occrp.org>
 
-RUN apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62
-RUN echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list
+#
+# which package do we want?
+# possible versions: nginx, nginx-light, nginx-full, nginx-extras
+# 
+# if version is the default -- "nginx" -- the nginx.org package is installed
+# otherwise, the Debian-provided package is installed; compare versions here:
+# https://wiki.debian.org/Nginx#Recap_of_the_different_modules_in_every_package_.28starting_Squeeze-Backports.29
+ARG NGINX_PACKAGE=nginx
 
-# yeah, we'll pin on this
-ENV NGINX_VERSION 1.9*
+# NOTICE: Debian-provided packages are *older*, so adjust NGINX_VERSION accordingly
+#         (as of this writing Debian jessie package version is at 1.6*)
+ARG NGINX_VERSION=1.11*
+
+# reality check
+RUN case $NGINX_PACKAGE in \
+    nginx) \
+        echo "+-- building with nginx.org package: ${NGINX_PACKAGE}"; \
+        apt-key adv --keyserver hkp://pgp.mit.edu:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62; \
+        echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list; \
+        ;; \
+    nginx-light|nginx-full|nginx-extras) \
+        echo "+-- building with Debian-provided package: ${NGINX_PACKAGE}"; \
+        echo "\n* * * NOTICE: if build fails, make sure NGINX_VERSION is properly adjusted to what is available in Debian repository!\n\n"; \
+        ;; \
+    *) \
+        echo "\n* * * ERROR: unknown nginx package: ${NGINX_PACKAGE}; please use one of: nginx, nginx-light, nginx-full, nginx-extras\n\n"; \
+        exit 1; \
+        ;; \
+    esac
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y ca-certificates nginx="${NGINX_VERSION}" inotify-tools && \
+    apt-get install -y ca-certificates "${NGINX_PACKAGE}"="${NGINX_VERSION}" inotify-tools && \
     rm -rf /var/lib/apt/lists/*
 
 # forward request and error logs to docker log collector
@@ -45,5 +68,4 @@ RUN chmod +x /run.sh
 VOLUME ["/var/cache/nginx", "/etc/nginx"]
 
 EXPOSE 80 443
-#CMD ["nginx", "-g", "daemon off;"]
 CMD ["/run.sh"]
