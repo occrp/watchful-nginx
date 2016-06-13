@@ -1,6 +1,6 @@
 # Watchful NginX
 
-Watchful NginX container -- nginx docker container that watches for logrotated logfiles and makes sure nginx reloads them when needed.
+Watchful NginX container -- `nginx` docker container that watches for logrotated logfiles using `inotify` and makes sure `nginx` reloads them when needed. A nasty, but functional, kludge of a work-around for [lack of PID namespaces in docker](https://github.com/docker/docker/issues/10163).
 
 Upon start it creates a dhparam file in `/etc/ssl/nginx/dhparam.pem` (if the file does not exist) and sets an `inotify` watch on `/srv/logs/nginx/logrotate`. Once the watch discovers that the watchfile has been modified, it sends the `USR1` signal to `nginx`, which causes it to reload the logfiles.
 
@@ -15,3 +15,4 @@ postrotate
 
  - watch the logfiles themselves and remove the need for the explicit logrotate flag file
  - more configuration options (logfile/watchfile locations, etc)
+

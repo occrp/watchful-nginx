@@ -36,6 +36,9 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
 RUN ln -sf /dev/stderr /var/log/nginx/error.log
 
+# make sure the log dir exists
+RUN mkdir -p /srv/logs/nginx/ && chown www-data:www-data /srv/logs/nginx/
+
 COPY run.sh /run.sh
 RUN chmod +x /run.sh
 
