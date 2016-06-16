@@ -54,6 +54,15 @@ RUN case $NGINX_PACKAGE in \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y ca-certificates "${NGINX_PACKAGE}"="${NGINX_VERSION}" inotify-tools && \
     rm -rf /var/lib/apt/lists/*
+    
+# we might need to install some packages, but doing this in the entrypoint doesn't make any sense
+ARG INSTALL_PACKAGES
+RUN if [ "$INSTALL_PACKAGES" != "" ]; then \
+        export DEBIAN_FRONTEND=noninteractive && apt-get update && apt-get install -y \
+            $INSTALL_PACKAGES \
+            --no-install-recommends && \
+        rm -rf /var/lib/apt/lists/* ; \
+    fi
 
 # forward request and error logs to docker log collector
 RUN ln -sf /dev/stdout /var/log/nginx/access.log
