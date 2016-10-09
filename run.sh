@@ -66,6 +66,11 @@ else
   echo "+-- dhparam found in $DHPARAM_FILE"
 fi
 
+if [ "$NGINX_BOOT" = "false" ]; then
+  echo "NGINX_BOOT is set to false, exiting."
+  exit
+fi
+
 # start the watch
 watch_logfiles &
 sleep 1
