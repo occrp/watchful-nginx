@@ -12,6 +12,13 @@ The `NGINX_VERSION` build argument controls the `nginx` package version that is 
 
 **NOTICE: package versions in official Debian repositories are much older than on `nginx.org`; hence, when using them, remember to set `NGINX_VERSION` accordingly. As of this writing Debian jessie package version is at `1.6*`.**
 
+## Environment variables
+
+***More documentation needed here***
+
+ - `NGINX_BOOT` (default: unset)  
+    if set to string `"false"`, the entrypoint script will exit immediately before running `nginx`, in effect making it possible to use the image to generate `dhparam` file and quit (curtesy [@cguess](https://twitter.com/cguess)).
+
 ### Examples
 
 Building the image with `nginx` package from `nginx.org`, version `1.11.x` (i.e. the default):
