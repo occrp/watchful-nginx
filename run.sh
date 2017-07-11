@@ -56,7 +56,10 @@ function watch_logfiles {
 }
 
 # create the dhparams
-if [ ! -e "$DHPARAM_FILE" ]; then
+if [ "$NO_DHPARAM" -eq "true" ]; then
+  echo "+-- dhparam generation explicitly disabled"
+  echo "    THIS IS INSECURE"
+elif [ ! -e "$DHPARAM_FILE" ]; then
   echo "+-- generating dhparam in $DHPARAM_FILE"
   mkdir -p "$( dirname "$DHPARAM_FILE" )"
   openssl dhparam -out "$DHPARAM_FILE" 4096

@@ -18,6 +18,9 @@ The `NGINX_VERSION` build argument controls the `nginx` package version that is 
 
  - `NGINX_BOOT` (default: unset)  
     if set to string `"false"`, the entrypoint script will exit immediately before running `nginx`, in effect making it possible to use the image to generate `dhparam` file and quit (curtesy [@cguess](https://twitter.com/cguess)).
+    
+ - `NO_DHPARAM` (default: unset)  
+    if set to string `"true"`, `dhparam` generation will be skipped entirely; this is *not* a good idea, and should be used only for internal/utility nginx instances that run behind another webserver with TLS support.
 
 ### Examples
 
