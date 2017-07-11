@@ -56,7 +56,7 @@ function watch_logfiles {
 }
 
 # create the dhparams
-if [ "$NO_DHPARAM" -eq "true" ]; then
+if [ "$NO_DHPARAM" = "true" ]; then
   echo "+-- dhparam generation explicitly disabled"
   echo "    THIS IS INSECURE"
 elif [ ! -e "$DHPARAM_FILE" ]; then
