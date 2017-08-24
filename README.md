@@ -8,9 +8,9 @@ The image can be built with either [`nginx` package installed from `nginx.org` r
 
 By default, `nginx` package from `nginx.org` is being installed. If `NGINX_PACKAGE` is set to anything else than `nginx`, packages from default Debian repositories are used instead.
 
-The `NGINX_VERSION` build argument controls the `nginx` package version that is going to be installed. By default, version `1.11*` (the latest) is used.
+The `NGINX_VERSION` build argument controls the `nginx` package version that is going to be installed. By default, version `1.13*` (the latest) is used.
 
-**NOTICE: package versions in official Debian repositories are much older than on `nginx.org`; hence, when using them, remember to set `NGINX_VERSION` accordingly. As of this writing Debian jessie package version is at `1.6*`.**
+**NOTICE: package versions in official Debian repositories are much older than on `nginx.org`; hence, when using them, remember to set `NGINX_VERSION` accordingly. As of this writing Debian jessie package version is at `1.10*`.**
 
 ## Environment variables
 
@@ -24,18 +24,18 @@ The `NGINX_VERSION` build argument controls the `nginx` package version that is 
 
 ### Examples
 
-Building the image with `nginx` package from `nginx.org`, version `1.11.x` (i.e. the default):
+Building the image with `nginx` package from `nginx.org`, version `1.13.x` (i.e. the default):
 
 ```bash
 docker build ./
 # equivalent to
-docker build --build-arg=NGINX_PACKAGE=nginx --build-arg=NGINX_VERSION=1.11* --no-cache ./
+docker build --build-arg=NGINX_PACKAGE=nginx --build-arg=NGINX_VERSION=1.13* --no-cache ./
 ```
 
-Building the image with `nginx-extras` package from the Debian repository, version `1.6*`:
+Building the image with `nginx-extras` package from the Debian repository, version `1.10*`:
 
 ```
-docker build --build-arg=NGINX_PACKAGE=nginx-extras --build-arg=NGINX_VERSION=1.6* --no-cache ./
+docker build --build-arg=NGINX_PACKAGE=nginx-extras --build-arg=NGINX_VERSION=1.10* --no-cache ./
 ```
 
 ## Operation

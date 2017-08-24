@@ -1,4 +1,4 @@
-FROM debian:jessie
+FROM debian:stretch
 
 #    Watchful NginX container -- nginx docker container that watches for
 #    logrotated logfiles and makes sure nginx reloads them when needed.
@@ -31,15 +31,20 @@ MAINTAINER Michał "rysiek" Woźniak <rysiek@occrp.org>
 ARG NGINX_PACKAGE=nginx
 
 # NOTICE: Debian-provided packages are *older*, so adjust NGINX_VERSION accordingly
-#         (as of this writing Debian jessie package version is at 1.6*)
-ARG NGINX_VERSION=1.11*
+#         (as of this writing Debian stretch package version is at 1.10*)
+ARG NGINX_VERSION=1.13*
+
+# requirements
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+    apt-get install -y ca-certificates inotify-tools gnupg2 && \
+    rm -rf /var/lib/apt/lists/*
 
 # reality check
 RUN case $NGINX_PACKAGE in \
     nginx) \
         echo "+-- building with nginx.org package: ${NGINX_PACKAGE}"; \
         apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62; \
-        echo "deb http://nginx.org/packages/mainline/debian/ jessie nginx" >> /etc/apt/sources.list; \
+        echo "deb http://nginx.org/packages/mainline/debian/ stretch nginx" >> /etc/apt/sources.list; \
         ;; \
     nginx-light|nginx-full|nginx-extras) \
         echo "+-- building with Debian-provided package: ${NGINX_PACKAGE}"; \
@@ -52,7 +57,7 @@ RUN case $NGINX_PACKAGE in \
     esac
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y ca-certificates "${NGINX_PACKAGE}"="${NGINX_VERSION}" inotify-tools && \
+    apt-get install -y "${NGINX_PACKAGE}"="${NGINX_VERSION}" && \
     rm -rf /var/lib/apt/lists/*
     
 # we might need to install some packages, but doing this in the entrypoint doesn't make any sense
