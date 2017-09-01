@@ -23,13 +23,13 @@
 
 # yes, this is dead-simple; just watch this file,
 # and if it gets modified, send nginx the signal
-WATCH_FILE="/srv/logs/nginx/logrotate"
+[ -z $WATCH_FILE ] && WATCH_FILE="/srv/logs/nginx/logrotate"
 
 # we need this for signal sending
-PID_FILE="/var/run/nginx.pid"
+[ -z $PID_FILE ] && PID_FILE="/var/run/nginx.pid"
 
-# we need this for DHParram generation
-DHPARAM_FILE="/etc/ssl/nginx/dhparam.pem"
+# we need this for dhparam generation
+[ -z $DHPARAM_FILE ] && DHPARAM_FILE="/etc/ssl/nginx/dhparam.pem"
 
 # this waits for changes in $WATCH_FILE and sends nginx a USR1 signal to reload the logfiles
 function watch_logfiles {

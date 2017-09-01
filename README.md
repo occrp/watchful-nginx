@@ -21,6 +21,11 @@ The `NGINX_VERSION` build argument controls the `nginx` package version that is 
     
  - `NO_DHPARAM` (default: unset)  
     if set to string `"true"`, `dhparam` generation will be skipped entirely; this is *not* a good idea, and should be used only for internal/utility nginx instances that run behind another webserver with TLS support.
+    
+ - `PID_FILE` (default: "`/var/run/nginx.pid`")
+ - `WATCH_FILE` (default: "`/srv/logs/nginx/logrotate`")
+ - `DHPARAM_FILE` (default: "`/etc/ssl/nginx/dhparam.pem`")
+    these control the locations where the `run.sh` script expects to find the `nginx` pidfile, the file to watch for logrotate signalling, and the SSL DH parameters files; these should reflect `nginx` config.
 
 ### Examples
 
@@ -40,13 +45,13 @@ docker build --build-arg=NGINX_PACKAGE=nginx-extras --build-arg=NGINX_VERSION=1.
 
 ## Operation
 
-Upon start it creates a dhparam file in `/etc/ssl/nginx/dhparam.pem` (if the file does not exist) and sets an `inotify` watch on `/srv/logs/nginx/logrotate`. Once the watch discovers that the watchfile has been modified, it sends the `USR1` signal to `nginx`, which causes it to reload the logfiles.
+Upon start it creates a dhparam file in `$DHPARAM_FILE` (if the file does not exist) and sets an `inotify` watch on `$WATCH_FILE`. Once the watch discovers that the watchfile has been modified, it sends the `USR1` signal to `nginx`, which causes it to reload the logfiles.
 
 Use by volume-mounting the watchfile in this container and in a container that logrotate runs in, and making sure logrotate touches/modifies that file, for instance by using the following in your logrotate config files:
 
 ```
 postrotate
-      /bin/date > /srv/logs/nginx/logrotate
+      /bin/date > /srv/logs/nginx/logrotate # or whatever is in $WATCH_FILE
 ```
 
 ## ToDo
