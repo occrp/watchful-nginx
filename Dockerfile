@@ -43,7 +43,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 RUN case $NGINX_PACKAGE in \
     nginx) \
         echo "+-- building with nginx.org package: ${NGINX_PACKAGE}"; \
-        apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 0xABF5BD827BD9BF62 && \
+        apt-key adv --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 && \
         echo "deb http://nginx.org/packages/mainline/debian `lsb_release -cs` nginx" >> /etc/apt/sources.list; \
         ;; \
     nginx-light|nginx-full|nginx-extras) \
