@@ -43,10 +43,8 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
 RUN case $NGINX_PACKAGE in \
     nginx) \
         echo "+-- building with nginx.org package: ${NGINX_PACKAGE}"; \
-        curl -fsSL https://nginx.org/keys/nginx_signing.key | apt-key add -; \
-        apt-key fingerprint ABF5BD827BD9BF62; \
+        apt-key adv --keyserver pgp.mit.edu --recv-keys ABF5BD827BD9BF62 && \
         echo "deb http://nginx.org/packages/mainline/debian `lsb_release -cs` nginx" >> /etc/apt/sources.list; \
-        tee /etc/apt/sources.list.d/nginx.list; \
         ;; \
     nginx-light|nginx-full|nginx-extras) \
         echo "+-- building with Debian-provided package: ${NGINX_PACKAGE}"; \
@@ -59,7 +57,6 @@ RUN case $NGINX_PACKAGE in \
     esac
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-cache policy nginx && \
     apt-get install -y "${NGINX_PACKAGE}"="${NGINX_VERSION}" && \
     rm -rf /var/lib/apt/lists/*
 
