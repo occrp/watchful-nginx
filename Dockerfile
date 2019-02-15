@@ -32,19 +32,19 @@ ARG NGINX_PACKAGE=nginx
 
 # NOTICE: Debian-provided packages are *older*, so adjust NGINX_VERSION accordingly
 #         (as of this writing Debian stretch package version is at 1.10*)
-ARG NGINX_VERSION=1.13*
+ARG NGINX_VERSION=1.15*
 
 # requirements
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
-    apt-get install -y ca-certificates inotify-tools gnupg2 && \
+    apt-get install -y ca-certificates inotify-tools gnupg2 lsb-release curl && \
     rm -rf /var/lib/apt/lists/*
 
 # reality check
 RUN case $NGINX_PACKAGE in \
     nginx) \
         echo "+-- building with nginx.org package: ${NGINX_PACKAGE}"; \
-        apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 573BFD6B3D8FBC641079A6ABABF5BD827BD9BF62; \
-        echo "deb http://nginx.org/packages/mainline/debian/ stretch nginx" >> /etc/apt/sources.list; \
+        apt-key adv --no-tty --keyserver keyserver.ubuntu.com --recv-keys ABF5BD827BD9BF62 && \
+        echo "deb http://nginx.org/packages/mainline/debian `lsb_release -cs` nginx" >> /etc/apt/sources.list; \
         ;; \
     nginx-light|nginx-full|nginx-extras) \
         echo "+-- building with Debian-provided package: ${NGINX_PACKAGE}"; \
@@ -59,7 +59,7 @@ RUN case $NGINX_PACKAGE in \
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     apt-get install -y "${NGINX_PACKAGE}"="${NGINX_VERSION}" && \
     rm -rf /var/lib/apt/lists/*
-    
+
 # we might need to install some packages, but doing this in the entrypoint doesn't make any sense
 ARG INSTALL_PACKAGES
 RUN if [ "$INSTALL_PACKAGES" != "" ]; then \
